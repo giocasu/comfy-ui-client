@@ -23,7 +23,7 @@ export const txt2img = async (
   const images = await client.getImages(prompt);
 
   // Save images to file
-  await client.saveImages(images, outputDir);
+  // await client.saveImages(images, outputDir);
 
   // Disconnect
   await client.disconnect();
