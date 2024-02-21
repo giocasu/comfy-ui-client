@@ -2,7 +2,7 @@
 // import { join } from 'path';
 
 import pino from 'pino';
-import WebSocket from 'ws';
+import WebSocket from 'isomorphic-ws';
 
 import type {
   EditHistoryRequest,
@@ -43,35 +43,34 @@ export class ComfyUIClient {
       if (this.ws) {
         await this.disconnect();
       }
-
       const url = `ws://${this.serverAddress}/ws?clientId=${this.clientId}`;
+      // const url = `ws://${this.serverAddress}`;
 
       logger.info(`Connecting to url: ${url}`);
 
-      this.ws = new WebSocket(url, {
-        perMessageDeflate: false,
-      });
-
-      this.ws.on('open', () => {
+      // this.ws = new WebSocket(url, {
+      //   perMessageDeflate: false,
+      // });
+      this.ws = new WebSocket(url);
+      console.log('this.ws', this.ws);
+      this.ws.onopen = async () => {
         logger.info('Connection open');
-        resolve();
-      });
+      
+      };
 
-      this.ws.on('close', () => {
+      this.ws.close = async  () => {
         logger.info('Connection closed');
-      });
+      };
 
-      this.ws.on('error', (err) => {
+      this.ws.onerror = async  (err) => {
         logger.error({ err }, 'WebSockets error');
-      });
+      };
 
-      this.ws.on('message', (data, isBinary) => {
-        if (isBinary) {
-          logger.debug('Received binary data');
-        } else {
+      this.ws.onmessage = async  (data) => {
+        
           logger.debug('Received data: %s', data.toString());
-        }
-      });
+        
+      };
     });
   }
 

@@ -42,6 +42,7 @@
     "prettier": "prettier --config .prettierrc --write ./src"
   },
   "dependencies": {
+    "isomorphic-ws": "^5.0.0",
     "pino": "^8.14.2",
     "uuid": "^9.0.0",
     "ws": "^8.13.0"
