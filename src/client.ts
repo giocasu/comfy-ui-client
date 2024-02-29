@@ -338,11 +338,12 @@ export class ComfyUIClient {
     return new Promise<ImagesResponse>((resolve, reject) => {
       const outputImages: ImagesResponse = {};
 
-      const onMessage = async (data: WebSocket.RawData, isBinary: boolean) => {
+      const onMessage = async (event: any) => {
         // Previews are binary data
-        if (isBinary) {
-          return;
-        }
+        console.log('EVENT', event);
+        console.log('EVENT.message', event.message);
+        console.log('EVENT.data', event.data);
+        let data = event.data; //event.message.data;
 
         try {
           const message = JSON.parse(data.toString());
@@ -381,7 +382,8 @@ export class ComfyUIClient {
                 }
 
                 // Remove listener
-                this.ws?.off('message', onMessage);
+                //this.ws?.removeListener('message', onMessage);
+                console.log('outputImages', outputImages);
                 return resolve(outputImages);
               }
             }
@@ -392,7 +394,10 @@ export class ComfyUIClient {
       };
 
       // Add listener
-      this.ws?.on('message', onMessage);
+      if(this.ws) {
+        this.ws.onmessage = onMessage;
+      }
+    
     });
   }
 }
